@@ -1,0 +1,23 @@
+name: Generate terraform docs
+on:
+  - push
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Render terraform docs and push changes
+      uses: terraform-docs/gh-actions@main
+      with:
+        working-dir: ./compute/ec2
+        output-file: README.md
+        output-method: inject
+        git-push: "true"
+    - name: Render terraform docs and push changes
+      uses: terraform-docs/gh-actions@main
+      with:
+        working-dir: ./developer-tools/codedeploy
+        output-file: README.md
+        output-method: inject
+        git-push: "true"

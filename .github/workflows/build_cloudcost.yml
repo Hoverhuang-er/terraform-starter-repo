@@ -1,0 +1,27 @@
+name: Generate Cloud Platform cost
+on:
+  - push
+
+env:
+   SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+jobs:
+  cost:
+    name: Infracost
+    runs-on: ubuntu-latest
+    env:
+       TF_ROOT: /home/ubuntu/terraform
+    steps:
+      - name: Setup Infracost
+        uses: infracost/actions/setup@v2
+        with:
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
+      - name: Checkout to starter branch
+        uses: actions/checkout@v3
+        with:
+          ref: '${{ github.event.pull_request.head.ref }}'
+          fetch-depth: 2
+      - name: Generate infacost and Show out cost baseline
+        run: |
+          infracost breakdown --path=./ --format=json --out-file=./infracost.json
+          infracost diff --path=./--format=json --out-file=./infracost-diff.json
+          infracost comment github --path=./infracost.json --repo=terraform-starter-repo --behaviour=show-baseline
