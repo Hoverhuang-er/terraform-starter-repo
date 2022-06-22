@@ -22,6 +22,6 @@ jobs:
           fetch-depth: 2
       - name: Generate infacost and Show out cost baseline
         run: |
-          infracost breakdown --path=./ --format=json --out-file=./infracost.json
+          infracost breakdown --path=./ --format=json --out-file=${{ github.event_path }}/infracost.json
           infracost diff --path=./--format=json --out-file=./infracost-diff.json
-          infracost comment github --path=./infracost.json --repo=terraform-starter-repo --behaviour=show-baseline
+          infracost comment github --path=${{ github.event_path }}/infracost.json --repo=terraform-starter-repo --behaviour=show-baseline
